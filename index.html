@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>김치 게임</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- 준비 화면 -->
+    <section id="view-setup" class="view view-setup" aria-label="문장 입력">
+      <header class="setup-header">
+        <h1>김치 게임</h1>
+        <p class="setup-lead">문장을 여러 줄로 입력한 뒤 게임을 시작하세요.</p>
+      </header>
+      <label class="sr-only" for="sentences-input">게임에 사용할 문장들</label>
+      <textarea
+        id="sentences-input"
+        class="sentences-input"
+        rows="12"
+        placeholder="한 줄에 문장 하나씩 입력하세요.&#10;예: 오늘 날씨가 좋아요.&#10;우리 함께 읽어 볼까요?"
+        aria-invalid="false"
+      ></textarea>
+      <p id="setup-error" class="setup-error" role="alert" hidden></p>
+      <button type="button" id="btn-start" class="btn btn-primary">게임시작</button>
+    </section>
+
+    <!-- 게임 전용 전체 화면 -->
+    <section id="view-game" class="view view-game hidden" aria-label="게임 화면" hidden>
+      <button
+        type="button"
+        id="btn-admin-hidden"
+        class="btn-admin-hidden"
+        aria-label="관리자용 설정"
+        title="관리자용 설정"
+      ></button>
+      <button type="button" id="btn-settings" class="btn-settings" title="관리자용 설정">
+        ·
+      </button>
+      <p id="game-final-badge" class="game-final-badge" hidden aria-hidden="true">FINAL</p>
+      <div class="game-stage">
+        <p id="game-toast" class="game-toast" role="alert" hidden></p>
+        <div id="game-text" class="game-text" role="status"></div>
+      </div>
+      <footer class="game-footer">
+        <button type="button" id="btn-next" class="btn btn-next">다음 페이지</button>
+        <div class="game-footer-extra">
+          <button type="button" id="btn-final" class="btn btn-final">Final</button>
+          <button type="button" id="btn-winner" class="btn btn-winner">Winner</button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- 김치 페이지 — 아웃 연출 -->
+    <section id="view-kimchi" class="view view-kimchi hidden" aria-label="김치" hidden>
+      <div class="kimchi-stage">
+        <p class="kimchi-title" aria-hidden="true">KIMCHI!</p>
+        <p class="kimchi-out" role="status">
+          게임이 잠시 멈춥니다.<br />
+          <span class="kimchi-out-strong">이번 차례 참가자는 아웃입니다.</span>
+        </p>
+        <video
+          id="kimchi-video"
+          class="kimchi-video"
+          src="kimchisong.mp4"
+          playsinline
+          controls
+          preload="auto"
+        >
+          영상을 재생할 수 없습니다. 브라우저가 동영상 재생을 지원하는지 확인해 주세요.
+        </video>
+      </div>
+      <footer class="kimchi-footer">
+        <button type="button" id="btn-next-participant" class="btn btn-kimchi-primary">다음 페이지</button>
+        <button type="button" id="btn-kimchi-to-setup" class="btn btn-kimchi-secondary">준비 화면으로</button>
+      </footer>
+    </section>
+
+    <!-- 스페셜 페이지: 카드 3장 → 뒤집기 후 결과 (등장 설정 후 타이머 경과 시 「다음 페이지」에서 등장) -->
+    <section id="view-special" class="view view-special hidden" aria-label="스페셜" hidden>
+      <div class="special-stage">
+        <p id="special-prompt" class="special-prompt">카드 한 장을 골라 뒤집어 보세요.</p>
+        <div
+          id="special-cards-row"
+          class="special-cards-row"
+          role="group"
+          aria-label="물음표 카드 세 장"
+        >
+          <button type="button" class="special-card-btn" id="special-card-0" aria-label="카드 1">
+            <span class="special-card-flip">
+              <span class="special-card-side special-card-back">?</span>
+              <span class="special-card-side special-card-front" aria-hidden="true"></span>
+            </span>
+          </button>
+          <button type="button" class="special-card-btn" id="special-card-1" aria-label="카드 2">
+            <span class="special-card-flip">
+              <span class="special-card-side special-card-back">?</span>
+              <span class="special-card-side special-card-front" aria-hidden="true"></span>
+            </span>
+          </button>
+          <button type="button" class="special-card-btn" id="special-card-2" aria-label="카드 3">
+            <span class="special-card-flip">
+              <span class="special-card-side special-card-back">?</span>
+              <span class="special-card-side special-card-front" aria-hidden="true"></span>
+            </span>
+          </button>
+        </div>
+        <div id="special-result" class="special-result" hidden>
+          <div id="special-deity-wrap" class="special-deity-wrap" hidden>
+            <img
+              id="special-deity-img"
+              class="special-deity-img"
+              alt=""
+              decoding="async"
+            />
+          </div>
+          <p id="special-label" class="special-label"></p>
+          <p id="special-main" class="special-main" role="status"></p>
+          <p id="special-sub" class="special-sub"></p>
+          <div id="special-dice-wrap" class="special-dice-wrap" hidden>
+            <div id="special-dice" class="special-dice" aria-hidden="true">🎲</div>
+            <p id="special-dice-hint" class="special-dice-hint">주사위를 굴리는 중…</p>
+          </div>
+        </div>
+      </div>
+      <footer class="special-footer">
+        <button type="button" id="btn-special-continue" class="btn btn-special-continue" disabled>
+          다음 페이지
+        </button>
+      </footer>
+    </section>
+
+    <!-- Winner 연출 -->
+    <section id="view-winner" class="view view-winner hidden" aria-label="승리" hidden>
+      <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+      <div class="winner-content">
+        <p class="winner-title">You're the winner!</p>
+        <button type="button" id="btn-winner-close" class="btn btn-winner-close">게임으로</button>
+      </div>
+      <audio id="victory-audio" preload="auto">
+        <source src="victory.mp3" type="audio/mpeg" />
+      </audio>
+    </section>
+
+  </div>
+  <script src="kimchi-sync.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
