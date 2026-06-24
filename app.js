@@ -62,7 +62,7 @@ var specialPageInterval = 10000;
    */
   function drawPagesUntilKimchi() {
     const r = Math.random();
-    if (r < 0.5) {
+    if (r < 0.4) {
       return 1;
     }
     if (r < 0.8) {
